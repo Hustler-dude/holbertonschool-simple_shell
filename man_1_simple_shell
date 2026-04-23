@@ -1,0 +1,124 @@
+.TH HSH 1 "April 2026" "1.0" "Simple Shell Manual"
+.SH NAME
+hsh \- simple UNIX command interpreter
+.SH SYNOPSIS
+.B hsh
+.RI [ script ]
+.SH DESCRIPTION
+.B hsh
+is a simple UNIX command line interpreter that reads commands from standard
+input or a script file and executes them.
+It replicates the behavior of
+.BR /bin/sh
+for basic command execution.
+.PP
+If invoked with no arguments,
+.B hsh
+runs in interactive mode: it displays a prompt
+.RB ( "$ " )
+and waits for the user to type a command.
+If standard input is not a terminal (pipe or file),
+.B hsh
+runs in non-interactive mode and reads commands silently.
+.SH INVOCATION
+.SS Interactive mode
+.PP
+.nf
+$ ./hsh
+($) /bin/ls
+hsh main.c shell.h
+($) exit
+$
+.fi
+.SS Non-interactive mode
+.PP
+.nf
+$ echo "/bin/ls" | ./hsh
+hsh main.c shell.h
+$ cat commands.txt | ./hsh
+.fi
+.SH BUILTINS
+.TP
+.B exit
+Exit the shell. The exit status is that of the last command executed.
+.TP
+.B env
+Print the current environment, one variable per line in the form
+.IR NAME=value .
+.SH COMMAND EXECUTION
+.PP
+When a command is entered,
+.B hsh
+searches for an executable file in each directory listed in the
+.B PATH
+environment variable, in order.
+If the command contains a
+.BR / ,
+it is used as a path directly.
+If the command is not found,
+.B hsh
+prints an error message to stderr:
+.PP
+.nf
+./hsh: 1: command: not found
+.fi
+.PP
+Commands are executed in a child process created with
+.BR fork (2).
+The child calls
+.BR execve (2)
+to replace itself with the target program.
+The parent waits for the child to finish with
+.BR wait (2).
+.SH EXIT STATUS
+.TP
+.B 0
+Successful execution.
+.TP
+.B 127
+Command not found.
+.TP
+.B 1
+General error (fork failure, etc.).
+.SH ENVIRONMENT
+.TP
+.B PATH
+Colon-separated list of directories searched for executables.
+.SH EXAMPLES
+.PP
+Run a command with its full path:
+.PP
+.nf
+($) /bin/echo Hello, World!
+Hello, World!
+.fi
+.PP
+Run a command found in PATH:
+.PP
+.nf
+($) ls -l /tmp
+.fi
+.PP
+Print environment variables:
+.PP
+.nf
+($) env
+HOME=/root
+PATH=/usr/local/bin:/usr/bin:/bin
+...
+.fi
+.PP
+Handle EOF (Ctrl+D):
+.PP
+.nf
+($) ^D
+$
+.fi
+.SH SEE ALSO
+.BR sh (1),
+.BR bash (1),
+.BR execve (2),
+.BR fork (2),
+.BR wait (2)
+.SH AUTHORS
+Desmond Ondai <nickhustler12@gmail.com>
