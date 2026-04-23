@@ -40,7 +40,7 @@ int main(int ac, char **av, char **env)
 			free(args);
 			continue;
 		}
-		builtin_ret = handle_builtin(args, status);
+		builtin_ret = handle_builtin(args, status, env);
 		if (builtin_ret == 2)
 		{
 			free(args);
