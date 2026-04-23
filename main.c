@@ -15,6 +15,7 @@ int main(int ac, char **av, char **env)
 	size_t len = 0;
 	ssize_t nread;
 	int status = 0;
+	int builtin_ret = 0;
 
 	(void)ac;
 	while (1)
@@ -39,7 +40,14 @@ int main(int ac, char **av, char **env)
 			free(args);
 			continue;
 		}
-		if (handle_builtin(args, status))
+		builtin_ret = handle_builtin(args, status);
+		if (builtin_ret == 2)
+		{
+			free(args);
+			free(line);
+			exit(status);
+		}
+		if (builtin_ret == 1)
 		{
 			free(args);
 			continue;
