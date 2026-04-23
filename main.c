@@ -39,6 +39,11 @@ int main(int ac, char **av, char **env)
 			free(args);
 			continue;
 		}
+		if (handle_builtin(args, status))
+		{
+			free(args);
+			continue;
+		}
 		status = execute(args, av[0], env);
 		free(args);
 	}
