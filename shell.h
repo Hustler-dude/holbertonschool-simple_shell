@@ -11,5 +11,6 @@
 int execute(char **args, char *prog_name, char **env);
 char **parse_line(char *line);
 void print_error(char *prog_name, char *cmd);
+char *find_in_path(char *cmd, char **env);
 
 #endif /* SHELL_H */
