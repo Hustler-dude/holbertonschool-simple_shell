@@ -34,8 +34,11 @@ int main(int ac, char **av, char **env)
 		if (line[0] == '\0')
 			continue;
 		args = parse_line(line);
-		if (!args)
+		if (!args || !args[0])
+		{
+			free(args);
 			continue;
+		}
 		status = execute(args, av[0], env);
 		free(args);
 	}
