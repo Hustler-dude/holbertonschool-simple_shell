@@ -26,6 +26,7 @@ int main(int ac, char **av, char **env)
 		{
 			if (isatty(STDIN_FILENO))
 				write(STDOUT_FILENO, "\n", 1);
+			free(line);
 			break;
 		}
 		if (line[nread - 1] == '\n')
@@ -38,6 +39,5 @@ int main(int ac, char **av, char **env)
 		status = execute(args, av[0], env);
 		free(args);
 	}
-	free(line);
 	return (status);
 }
